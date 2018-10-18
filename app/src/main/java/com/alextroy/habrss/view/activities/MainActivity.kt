@@ -20,7 +20,7 @@ class MainActivity : AppCompatActivity() {
     private lateinit var adapter: HabrAdapter
     private lateinit var articleList: List<Entry>
 
-    private val hubrApp by lazy {
+    private val habrApp by lazy {
         HabrApp.create()
     }
 
@@ -40,9 +40,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getData() {
-        hubrApp.getArticle().enqueue(object : Callback<Rss> {
+        habrApp.getArticle().enqueue(object : Callback<Rss> {
             override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
-                val entry: List<Entry>? = response.body()!!.channel!!.podcasts
+                val entry: List<Entry>? = response.body()!!.channel!!.entries
                 adapter.addAll(entry)
             }
 

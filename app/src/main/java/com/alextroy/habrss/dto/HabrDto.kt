@@ -4,21 +4,21 @@ import org.simpleframework.xml.*
 
 
 @Root(name = "rss", strict = false)
-data class Rss @JvmOverloads constructor(
+data class Rss(
     @field:Element(name = "channel")
     @param:Element(name = "channel")
     val channel: Channel? = null
 )
 
 @Root(name = "channel", strict = false)
-data class Channel @JvmOverloads constructor(
+data class Channel(
     @field:ElementList(entry = "item", inline = true)
     @param:ElementList(entry = "item", inline = true)
-    val podcasts: List<Entry>? = null
+    val entries: List<Entry>? = null
 )
 
 @Root(name = "item", strict = false)
-data class Entry @JvmOverloads constructor(
+data class Entry(
     @field:Path("description")
     @field:Text(required = false)
     @param:Path("description")
