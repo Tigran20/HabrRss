@@ -10,7 +10,6 @@ import com.alextroy.habrss.api.HabrApp
 import com.alextroy.habrss.dto.Entry
 import com.alextroy.habrss.view.adapter.HabrAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.article_list.*
@@ -19,7 +18,7 @@ class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: HabrAdapter
     private lateinit var articleList: List<Entry>
-    private val compositeDisposable = CompositeDisposable()
+    private lateinit var disposable: Disposable
 
     private val habrApp by lazy {
         HabrApp.create()
@@ -41,7 +40,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getData() {
-        val searchDisposable: Disposable = habrApp.getArticle()
+        disposable = habrApp.getArticle()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
@@ -52,11 +51,10 @@ class MainActivity : AppCompatActivity() {
                     Toast.makeText(this, "error", Toast.LENGTH_LONG).show()
                 }
             )
-        compositeDisposable.add(searchDisposable)
     }
 
     override fun onPause() {
         super.onPause()
-        compositeDisposable.dispose()
+        disposable.dispose()
     }
 }
