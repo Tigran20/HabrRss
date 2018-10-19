@@ -2,10 +2,10 @@ package com.alextroy.habrss.api
 
 
 import com.alextroy.habrss.dto.Rss
-import retrofit2.Call
+import io.reactivex.Single
 import retrofit2.http.GET
 
 interface HabrApi {
     @GET("rss/hubs/all/")
-    fun getArticle(): Call<Rss>
+    fun getArticle(): Single<Rss>
 }

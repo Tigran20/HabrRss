@@ -1,24 +1,25 @@
 package com.alextroy.habrss.view.activities
 
+
 import android.os.Bundle
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alextroy.habrss.R
 import com.alextroy.habrss.api.HabrApp
 import com.alextroy.habrss.dto.Entry
-import com.alextroy.habrss.dto.Rss
 import com.alextroy.habrss.view.adapter.HabrAdapter
-
-
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.CompositeDisposable
+import io.reactivex.disposables.Disposable
+import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.article_list.*
-import retrofit2.Call
-import retrofit2.Callback
-import retrofit2.Response
 
 class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: HabrAdapter
     private lateinit var articleList: List<Entry>
+    private val compositeDisposable = CompositeDisposable()
 
     private val habrApp by lazy {
         HabrApp.create()
@@ -40,14 +41,17 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getData() {
-        habrApp.getArticle().enqueue(object : Callback<Rss> {
-            override fun onResponse(call: Call<Rss>, response: Response<Rss>) {
-                val entry: List<Entry>? = response.body()!!.channel!!.entries
-                adapter.addAll(entry)
-            }
-
-            override fun onFailure(call: Call<Rss>, t: Throwable) {
-            }
-        })
+        val searchDisposable: Disposable = habrApp.getArticle()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .subscribe(
+                { result ->
+                    adapter.addAll(result.channel!!.entries)
+                },
+                {
+                    Toast.makeText(this, "error", Toast.LENGTH_LONG).show()
+                }
+            )
+        compositeDisposable.add(searchDisposable)
     }
 }
