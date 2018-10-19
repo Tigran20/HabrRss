@@ -14,14 +14,16 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.article_list.*
 
+
 class MainActivity : AppCompatActivity() {
 
     private lateinit var adapter: HabrAdapter
     private lateinit var articleList: List<Entry>
     private lateinit var disposable: Disposable
 
+
     private val habrApp by lazy {
-        HabrApp.create()
+        HabrApp.create(this@MainActivity)
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
