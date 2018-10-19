@@ -1,3 +1,5 @@
 <resources>
     <string name="app_name">HabRss</string>
+    <string name="no_data">No data!</string>
+    <string name="updated">Content updated</string>
 </resources>

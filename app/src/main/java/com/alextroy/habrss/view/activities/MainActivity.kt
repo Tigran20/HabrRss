@@ -21,7 +21,6 @@ class MainActivity : AppCompatActivity() {
     private lateinit var articleList: List<Entry>
     private lateinit var disposable: Disposable
 
-
     private val habrApp by lazy {
         HabrApp.create(this@MainActivity)
     }
@@ -32,13 +31,23 @@ class MainActivity : AppCompatActivity() {
 
         initRecyclerView()
         getData()
+        updateData()
     }
 
     private fun initRecyclerView() {
+
         articleList = ArrayList()
         adapter = HabrAdapter(articleList, this@MainActivity)
         recycler_view.adapter = adapter
         recycler_view.layoutManager = LinearLayoutManager(this)
+    }
+
+    private fun updateData() {
+        swipe_refresh_layout.setOnRefreshListener {
+            getData()
+            swipe_refresh_layout.isRefreshing = false
+            Toast.makeText(this, getString(R.string.updated), Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun getData() {
@@ -50,13 +59,14 @@ class MainActivity : AppCompatActivity() {
                     adapter.addAll(result.channel!!.entries)
                 },
                 {
-                    Toast.makeText(this, "error", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, getString(R.string.no_data), Toast.LENGTH_SHORT).show()
                 }
             )
     }
 
-    override fun onPause() {
-        super.onPause()
+
+    override fun onDestroy() {
+        super.onDestroy()
         disposable.dispose()
     }
 }
