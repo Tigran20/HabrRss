@@ -54,4 +54,9 @@ class MainActivity : AppCompatActivity() {
             )
         compositeDisposable.add(searchDisposable)
     }
+
+    override fun onPause() {
+        super.onPause()
+        compositeDisposable.dispose()
+    }
 }
