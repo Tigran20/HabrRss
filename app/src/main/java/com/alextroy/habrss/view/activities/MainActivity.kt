@@ -28,6 +28,7 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.article_list)
+        setSupportActionBar(findViewById(R.id.toolbar))
 
         initRecyclerView()
         getData()
@@ -35,7 +36,6 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initRecyclerView() {
-
         articleList = ArrayList()
         adapter = HabrAdapter(articleList, this@MainActivity)
         recycler_view.adapter = adapter
