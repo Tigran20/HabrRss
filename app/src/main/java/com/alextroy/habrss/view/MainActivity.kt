@@ -1,19 +1,18 @@
-package com.alextroy.habrss.view.activities
-
+package com.alextroy.habrss.view
 
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.alextroy.habrss.R
-import com.alextroy.habrss.api.HabrApp
+import com.alextroy.habrss.api.HabrApi
+import com.alextroy.habrss.di.App
 import com.alextroy.habrss.dto.Entry
-import com.alextroy.habrss.view.adapter.HabrAdapter
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
 import io.reactivex.schedulers.Schedulers
 import kotlinx.android.synthetic.main.article_list.*
-
+import javax.inject.Inject
 
 class MainActivity : AppCompatActivity() {
 
@@ -21,14 +20,15 @@ class MainActivity : AppCompatActivity() {
     private lateinit var articleList: List<Entry>
     private lateinit var disposable: Disposable
 
-    private val habrApp by lazy {
-        HabrApp.create(this@MainActivity)
-    }
+    @Inject
+    lateinit var habrApi: HabrApi
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.article_list)
         setSupportActionBar(findViewById(R.id.toolbar))
+
+        (application as App).getComponent().inject(this)
 
         initRecyclerView()
         getData()
@@ -51,7 +51,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getData() {
-        disposable = habrApp.getArticle()
+        disposable = habrApi.getArticle()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .subscribe(
